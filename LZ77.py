@@ -14,7 +14,7 @@ def lz77_compress(Data) -> list:
 
     while i < Len_Data:
 
-        """fewer than 3 bytes remaining, to build a table we need at least 3 bytes"""
+        #fewer than 3 bytes remaining, to build a table we need at least 3 bytes
         if i + MIN_MATCH > Len_Data:
             tokens.append(('literal', Data[i]))
             i +=1
@@ -33,7 +33,7 @@ def lz77_compress(Data) -> list:
             if distance > WINDOW_SIZE:
                 break
 
-            """match the same byte byte, to count the length and allow overlapping """
+            #match the same byte byte, to count the length and allow overlapping 
             max_Possible = min(MAX_MATCH, Len_Data - i)
             length = 0
             while length < max_Possible and Data[candidate + length] == Data[i + length]:
@@ -47,7 +47,7 @@ def lz77_compress(Data) -> list:
         if best_length >= MIN_MATCH:
 
             tokens.append(('match', best_length, best_distance))
-            """we are skipping the found match, but we need to make a key for each 3 byte for future"""
+            #we are skipping the found match, but we need to make a key for each 3 byte for future
             for j in range(i, i + best_length):
                 if j + MIN_MATCH <= Len_Data:
                     k = Data[j : j + 3]
@@ -66,3 +66,21 @@ def lz77_compress(Data) -> list:
 
             i+=1
     return tokens
+
+def lz77_decompress(tokens) -> bytes:
+
+    output = bytearray()
+
+    for token in tokens:
+
+        if token[0] == 'literal':
+            output.append(token[1])
+
+        else:
+            length = token[1]
+            distance = token[2]
+            start = len(output) - distance
+
+            for k in range(length):
+                output.append(output[start + k])
+    return bytes(output)
