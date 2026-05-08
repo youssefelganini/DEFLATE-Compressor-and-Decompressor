@@ -4,6 +4,13 @@ MIN_MATCH = 3
 MAX_MATCH = 258
 MAX_CANDIDATES = 64
 
+
+""" 
+--Notice--
+the functions deals with bytes as inputs and outputs as stated in the report 
+the input/ output from and for the user should be handeld in the main file  
+"""
+
 def lz77_compress(Data) -> list:
 
     Len_Data = len(Data)
@@ -11,6 +18,14 @@ def lz77_compress(Data) -> list:
 
     table = {}
     i= 0
+
+    """
+    ---what main loop does---
+    scan every position in data and search the previous bytes
+    for the longest repeated sequence using the hash table. If a match of 3+
+    bytes is found emit a match token, otherwise emit a literal
+    token and move one byte forward. Update the hash table after every token.
+    """
 
     while i < Len_Data:
 
@@ -26,7 +41,7 @@ def lz77_compress(Data) -> list:
         best_length = 0
         best_distance = 0
 
-        for candidate in reversed(candidates[-MAX_CANDIDATES:]):
+        for candidate in reversed(candidates[-MAX_CANDIDATES:]): # to get the latest 64 candidates
 
             distance = i - candidate
 
@@ -60,7 +75,7 @@ def lz77_compress(Data) -> list:
 
             tokens.append(('literal', Data[i]))
 
-            if key not in table:
+            if key not in table: # for future refrencing, even we emit an literal but we may need the pattern in here for future matches
                 table[key] = []
             table[key].append(i)
 
