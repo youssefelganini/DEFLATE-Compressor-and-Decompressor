@@ -1,12 +1,12 @@
 import heapq
-def count_frequencies(event_stream):
+def count_frequencies(event_streams):
     lit_freq = [0] * 286
     dist_freq = [0] * 30
     """
     this function counts the appearance frequency of each symbol
     including distance symbols but ignores extra bits as they are raw bits
     """
-    for event in event_stream:
+    for event in event_streams:
         if event[0] == "LiteralEvent":
             lit_freq[event[1]] += 1
         elif event[0] == "MatchEvent":
@@ -19,10 +19,12 @@ def count_frequencies(event_stream):
 
 
 
-"""
-this function builds the huffman tree and assigns the code length for each symbol
-this is achieved by using heapq library to build the tree using a priority queue"""
+
 def build_huffman_lengths(freq, alphabet_size):
+    """
+    this function builds the huffman tree and assigns the code length for each symbol
+    this is achieved by using heapq library to build the tree using a priority queue
+    """
     heap = []
     for symbol in range(alphabet_size):
         if freq[symbol] > 0: #if a symbol appears in the alphabet, push it into the priority queue
