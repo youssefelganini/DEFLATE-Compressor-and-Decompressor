@@ -64,7 +64,7 @@ def build_huffman_lengths(freq, alphabet_size):
 
 #this function takes lengths from the past function to generate the huffman codes
 def canonical_huffman(lengths):
-    count = [0] * 16 #array index are all the lengths 0-15
+    count = [0] * 32 #array index are all the lengths 0-15
     for length in lengths:
         count[length] += 1  #increment by one when finding each length
     
@@ -72,9 +72,9 @@ def canonical_huffman(lengths):
 
     #compute the first code of each length by adding the first code of previous length 
     #plus how many symbols had that length, then left shift to move to the next tree level
-    next_code = [0] * 16 
+    next_code = [0] * 32
     code = 0
-    for bits in range(1, 16): 
+    for bits in range(1, 32): 
         code = (code + count[bits - 1]) << 1 
         next_code[bits] = code
 
