@@ -119,13 +119,13 @@ def read_bits(data, pos, n):
 
 
 def build_decoder(lengths):
-    count = [0] * 16
+    count = [0] * 32
     for l in lengths:
         count[l] += 1
     count[0] = 0
-    next_code = [0] * 16
+    next_code = [0] * 32
     code = 0
-    for bits in range(1, 16):
+    for bits in range(1, 32):
         code = (code + count[bits - 1]) << 1
         next_code[bits] = code
     decoder = {}
