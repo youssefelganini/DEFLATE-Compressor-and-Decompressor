@@ -1,3 +1,4 @@
+from collections import deque
 # Constants
 WINDOW_SIZE = 32768
 MIN_MATCH = 3
@@ -41,7 +42,7 @@ def lz77_compress(Data) -> list:
         best_length = 0
         best_distance = 0
 
-        for candidate in reversed(candidates[-MAX_CANDIDATES:]): # to get the latest 64 candidates
+        for candidate in reversed(candidates): # to get the latest 64 candidates
 
             distance = i - candidate
 
@@ -50,7 +51,7 @@ def lz77_compress(Data) -> list:
 
             #match the same byte byte, to count the length and allow overlapping 
             max_Possible = min(MAX_MATCH, Len_Data - i)
-            length = 0
+            length = MIN_MATCH
             while length < max_Possible and Data[candidate + length] == Data[i + length]:
                 length += 1
 
@@ -67,7 +68,7 @@ def lz77_compress(Data) -> list:
                 if j + MIN_MATCH <= Len_Data:
                     k = Data[j : j + 3]
                     if k not in table:
-                        table[k] = []
+                        table[k] = deque(maxlen=MAX_CANDIDATES)
                     table[k].append(j)
             i += best_length
 
@@ -76,26 +77,26 @@ def lz77_compress(Data) -> list:
             tokens.append(('literal', Data[i]))
 
             if key not in table: # for future refrencing, even we emit an literal but we may need the pattern in here for future matches
-                table[key] = []
+                table[key] = deque(maxlen=MAX_CANDIDATES)
             table[key].append(i)
 
             i+=1
     return tokens
 
-def lz77_decompress(tokens) -> bytes:
+# def lz77_decompress(tokens) -> bytes:
 
-    output = bytearray()
+#     output = bytearray()
 
-    for token in tokens:
+#     for token in tokens:
 
-        if token[0] == 'literal':
-            output.append(token[1])
+#         if token[0] == 'literal':
+#             output.append(token[1])
 
-        else:
-            length = token[1]
-            distance = token[2]
-            start = len(output) - distance
+#         else:
+#             length = token[1]
+#             distance = token[2]
+#             start = len(output) - distance
 
-            for k in range(length):
-                output.append(output[start + k])
-    return bytes(output)
+#             for k in range(length):
+#                 output.append(output[start + k])
+#     return bytes(output)
